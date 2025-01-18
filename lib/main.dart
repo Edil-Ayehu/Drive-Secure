@@ -1,8 +1,11 @@
+import 'package:drive_secure/common/services/firebase_service.dart';
 import 'package:drive_secure/common/utils/app_theme.dart';
 import 'package:drive_secure/firebase_options.dart';
+import 'package:drive_secure/view/bloc/vehicle_bloc.dart';
 import 'package:drive_secure/view/dashboard_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,13 +39,20 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Drive Secure',
-      themeMode: _themeMode,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      home: DashboardScreen(onThemeToggle: toggleTheme),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => VehicleBloc(FirebaseService())..add(LoadVehicles()),
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Drive Secure',
+        themeMode: _themeMode,
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        home: DashboardScreen(onThemeToggle: toggleTheme),
+      ),
     );
   }
 }

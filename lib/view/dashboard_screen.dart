@@ -1,6 +1,7 @@
 import 'package:drive_secure/model/vehicle.dart';
+import 'package:drive_secure/view/bloc/vehicle_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DashboardScreen extends StatelessWidget {
   final VoidCallback onThemeToggle;
@@ -43,22 +44,23 @@ class DashboardScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemBuilder: (context, index) {
-          return VehicleCard(
-            vehicle: Vehicle(
-              id: '1',
-              name: 'Tesla Model 3',
-              status: 'Active',
-              fuelLevel: 0.8,
-              batteryLevel: 0.75,
-              lastLocation: {'latitude': 37.7749, 'longitude': -122.4194},
-              lastUpdated: DateTime.now(),
-            ),
-          );
+      body: BlocBuilder<VehicleBloc, VehicleState>(
+        builder: (context, state) {
+          if (state is VehicleLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is VehicleError) {
+            return Center(child: Text(state.message));
+          } else if (state is VehicleLoaded) {
+            return ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: state.vehicles.length,
+              itemBuilder: (context, index) {
+                return VehicleCard(vehicle: state.vehicles[index]);
+              },
+            );
+          }
+          return const Center(child: Text('No vehicles found'));
         },
-        itemCount: 1,
       ),
     );
   }
