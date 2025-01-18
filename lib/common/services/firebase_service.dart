@@ -11,13 +11,20 @@ class FirebaseService {
   }
 
   // Read
-  Stream<List<Vehicle>> getVehicles() {
-    return _vehiclesCollection.snapshots().map((snapshot) {
+Stream<List<Vehicle>> getVehicles() {
+  return _vehiclesCollection.snapshots().map((snapshot) {
+    try {
       return snapshot.docs.map((doc) {
-        return Vehicle.fromJson(doc.data() as Map<String, dynamic>);
+        final data = doc.data() as Map<String, dynamic>;
+        data['id'] = doc.id; // Ensure ID is included
+        return Vehicle.fromJson(data);
       }).toList();
-    });
-  }
+    } catch (e) {
+      print('Error parsing vehicles: $e');
+      return <Vehicle>[];
+    }
+  });
+}
 
   // Update
   Future<void> updateVehicle(Vehicle vehicle) async {

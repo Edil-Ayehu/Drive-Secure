@@ -1,15 +1,28 @@
 import 'package:drive_secure/model/vehicle.dart';
 import 'package:drive_secure/view/bloc/vehicle_bloc.dart';
+import 'package:drive_secure/view/vehicle_form_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   final VoidCallback onThemeToggle;
+  
 
   const DashboardScreen({
     super.key,
     required this.onThemeToggle,
   });
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<VehicleBloc>().add(LoadVehicles());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +44,7 @@ class DashboardScreen extends StatelessWidget {
               isDarkMode ? Icons.light_mode : Icons.dark_mode,
               color: theme.appBarTheme.iconTheme?.color,
             ),
-            onPressed: onThemeToggle,
+            onPressed: widget.onThemeToggle,
           ),
           IconButton(
             icon: Icon(
@@ -39,7 +52,12 @@ class DashboardScreen extends StatelessWidget {
               color: theme.appBarTheme.iconTheme?.color,
             ),
             onPressed: () {
-              // Navigate to add vehicle screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const VehicleFormScreen(),
+                ),
+              );
             },
           ),
         ],
@@ -80,71 +98,81 @@ class VehicleCard extends StatelessWidget {
     return Card(
       elevation: theme.cardTheme.elevation,
       shape: theme.cardTheme.shape,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  vehicle.name,
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    vehicle.status,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: statusColor,
-                      fontWeight: FontWeight.w500,
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => VehicleFormScreen(vehicle: vehicle),
+            ),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    vehicle.name,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildStatusIndicator(
-                    context,
-                    'Fuel Level',
-                    vehicle.fuelLevel,
-                    Icons.local_gas_station,
-                    Colors.blue,
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: statusColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      vehicle.status,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: statusColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: _buildStatusIndicator(
-                    context,
-                    'Battery',
-                    vehicle.batteryLevel,
-                    Icons.battery_charging_full,
-                    Colors.green,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Last Updated: ${_formatDateTime(vehicle.lastUpdated)}',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                ],
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildStatusIndicator(
+                      context,
+                      'Fuel Level',
+                      vehicle.fuelLevel,
+                      Icons.local_gas_station,
+                      Colors.blue,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: _buildStatusIndicator(
+                      context,
+                      'Battery',
+                      vehicle.batteryLevel,
+                      Icons.battery_charging_full,
+                      Colors.green,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Last Updated: ${_formatDateTime(vehicle.lastUpdated)}',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
