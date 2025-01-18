@@ -1,4 +1,4 @@
-# drive_secure
+# Drive Secure
 
 A new Flutter project.
 
@@ -14,3 +14,15 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+
+## Setup Firebase Configuration
+
+1. Copy `lib/firebase_options.template.dart` to `lib/firebase_options.dart`
+2. Replace the placeholder values with your actual Firebase configuration
+3. You can find these values in your Firebase Console:
+   - Project settings > General > Your apps
+   - Add app if you haven't configured one
+   - Register app and follow the setup instructions
+
+Note: Never commit `firebase_options.dart` to version control as it contains sensitive information.

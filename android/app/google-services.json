@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "659744504610",
+    "project_id": "drive-e50a6",
+    "storage_bucket": "drive-e50a6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:659744504610:android:d6bbfbd0b41a585386c37b",
+        "android_client_info": {
+          "package_name": "com.example.drive_secure"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiaD2-_6IU2xGVEEyshYi3jfVJxMRRsa0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
