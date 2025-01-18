@@ -39,6 +39,7 @@ dependencies:
   google_fonts: ^6.2.1
   flutter_bloc: ^9.0.0
   uuid: ^4.3.3
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:
