@@ -1,3 +1,4 @@
+import 'package:drive_secure/common/utils/app_theme.dart';
 import 'package:drive_secure/firebase_options.dart';
 import 'package:drive_secure/view/dashboard_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,19 +14,35 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.system;
+
+  void toggleTheme() {
+    setState(() {
+      if (_themeMode == ThemeMode.dark) {
+        _themeMode = ThemeMode.light;
+      } else {
+        _themeMode = ThemeMode.dark;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Drive Secure',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const DashboardScreen(),
+      themeMode: _themeMode,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      home: DashboardScreen(onThemeToggle: toggleTheme),
     );
   }
 }

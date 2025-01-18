@@ -3,25 +3,40 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DashboardScreen extends StatelessWidget {
-  const DashboardScreen({super.key});
+  final VoidCallback onThemeToggle;
+
+  const DashboardScreen({
+    super.key,
+    required this.onThemeToggle,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+    
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: theme.appBarTheme.backgroundColor,
         title: Text(
           'Vehicle Monitor',
-          style: GoogleFonts.poppins(
-            color: Colors.black87,
-            fontWeight: FontWeight.w600,
-          ),
+          style: theme.appBarTheme.titleTextStyle,
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add, color: Colors.black87),
+            icon: Icon(
+              isDarkMode ? Icons.light_mode : Icons.dark_mode,
+              color: theme.appBarTheme.iconTheme?.color,
+            ),
+            onPressed: onThemeToggle,
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.add,
+              color: theme.appBarTheme.iconTheme?.color,
+            ),
             onPressed: () {
               // Navigate to add vehicle screen
             },
@@ -56,11 +71,13 @@ class VehicleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isActive = vehicle.status == 'Active';
+    final statusColor = isActive ? Colors.green : Colors.red;
+    
     return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      elevation: theme.cardTheme.elevation,
+      shape: theme.cardTheme.shape,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -71,8 +88,7 @@ class VehicleCard extends StatelessWidget {
               children: [
                 Text(
                   vehicle.name,
-                  style: GoogleFonts.poppins(
-                    fontSize: 20,
+                  style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -82,17 +98,13 @@ class VehicleCard extends StatelessWidget {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: vehicle.status == 'Active'
-                        ? Colors.green.withOpacity(0.1)
-                        : Colors.red.withOpacity(0.1),
+                    color: statusColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
                     vehicle.status,
-                    style: GoogleFonts.poppins(
-                      color: vehicle.status == 'Active'
-                          ? Colors.green
-                          : Colors.red,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: statusColor,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -104,6 +116,7 @@ class VehicleCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: _buildStatusIndicator(
+                    context,
                     'Fuel Level',
                     vehicle.fuelLevel,
                     Icons.local_gas_station,
@@ -113,6 +126,7 @@ class VehicleCard extends StatelessWidget {
                 const SizedBox(width: 16),
                 Expanded(
                   child: _buildStatusIndicator(
+                    context,
                     'Battery',
                     vehicle.batteryLevel,
                     Icons.battery_charging_full,
@@ -124,9 +138,8 @@ class VehicleCard extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               'Last Updated: ${_formatDateTime(vehicle.lastUpdated)}',
-              style: GoogleFonts.poppins(
-                color: Colors.grey[600],
-                fontSize: 12,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
               ),
             ),
           ],
@@ -136,11 +149,14 @@ class VehicleCard extends StatelessWidget {
   }
 
   Widget _buildStatusIndicator(
+    BuildContext context,
     String label,
     double value,
     IconData icon,
     Color color,
   ) {
+    final theme = Theme.of(context);
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -150,9 +166,8 @@ class VehicleCard extends StatelessWidget {
             const SizedBox(width: 4),
             Text(
               label,
-              style: GoogleFonts.poppins(
-                color: Colors.grey[600],
-                fontSize: 14,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
               ),
             ),
           ],
@@ -167,7 +182,7 @@ class VehicleCard extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           '${(value * 100).toInt()}%',
-          style: GoogleFonts.poppins(
+          style: theme.textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.w500,
             color: color,
           ),
