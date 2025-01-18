@@ -3,6 +3,10 @@ import 'package:drive_secure/common/utils/app_theme.dart';
 import 'package:drive_secure/firebase_options.dart';
 import 'package:drive_secure/view/bloc/vehicle_bloc.dart';
 import 'package:drive_secure/view/dashboard_screen.dart';
+import 'package:drive_secure/view/login_screen.dart';
+import 'package:drive_secure/view/onboarding_screen.dart';
+import 'package:drive_secure/view/signup_screen.dart';
+import 'package:drive_secure/view/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -51,7 +55,14 @@ class _MyAppState extends State<MyApp> {
         themeMode: _themeMode,
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
-        home: DashboardScreen(onThemeToggle: toggleTheme),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const SplashScreen(),
+          '/onboarding': (context) => const OnboardingScreen(),
+          '/login': (context) => const LoginScreen(),
+          '/signup': (context) => const SignupScreen(),
+          '/dashboard': (context) => DashboardScreen(onThemeToggle: toggleTheme),
+        },
       ),
     );
   }
