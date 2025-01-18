@@ -69,15 +69,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
           } else if (state is VehicleError) {
             return Center(child: Text(state.message));
           } else if (state is VehicleLoaded) {
-            return ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: state.vehicles.length,
-              itemBuilder: (context, index) {
-                return VehicleCard(vehicle: state.vehicles[index]);
+            return RefreshIndicator(
+              onRefresh: () async {
+                context.read<VehicleBloc>().add(LoadVehicles());
               },
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: state.vehicles.length,
+                itemBuilder: (context, index) {
+                  return VehicleCard(vehicle: state.vehicles[index]);
+                },
+              ),
             );
           }
-          return const Center(child: Text('No vehicles found'));
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<VehicleBloc>().add(LoadVehicles());
+            },
+            child: ListView(
+              padding: const EdgeInsets.all(16),
+              children: const [
+                Center(child: Text('No vehicles found')),
+              ],
+            ),
+          );
         },
       ),
     );
