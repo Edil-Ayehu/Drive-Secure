@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AppTextField extends StatelessWidget {
+class AppTextField extends StatefulWidget {
   final TextEditingController controller;
   final String labelText;
   final IconData prefixIcon;
@@ -19,14 +19,34 @@ class AppTextField extends StatelessWidget {
   });
 
   @override
+  State<AppTextField> createState() => _AppTextFieldState();
+}
+
+class _AppTextFieldState extends State<AppTextField> {
+  bool _obscureText = true;
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return TextFormField(
-      controller: controller,
+      controller: widget.controller,
       decoration: InputDecoration(
-        labelText: labelText,
-        prefixIcon: Icon(prefixIcon),
+        labelText: widget.labelText,
+        prefixIcon: Icon(widget.prefixIcon),
+        suffixIcon: widget.isPassword
+            ? IconButton(
+                icon: Icon(
+                  _obscureText ? Icons.visibility : Icons.visibility_off,
+                  color: theme.iconTheme.color?.withOpacity(0.7),
+                ),
+                onPressed: () {
+                  setState(() {
+                    _obscureText = !_obscureText;
+                  });
+                },
+              )
+            : null,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),
@@ -43,9 +63,9 @@ class AppTextField extends StatelessWidget {
           ),
         ),
       ),
-      obscureText: isPassword,
-      keyboardType: keyboardType,
-      validator: validator,
+      obscureText: widget.isPassword && _obscureText,
+      keyboardType: widget.keyboardType,
+      validator: widget.validator,
     );
   }
 }
