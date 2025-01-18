@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:drive_secure/common/services/auth_service.dart';
+import 'package:drive_secure/view/widgets/app_text_field.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -96,15 +97,10 @@ class _SignupScreenState extends State<SignupScreen> {
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       children: [
-                        TextFormField(
+                        AppTextField(
                           controller: _emailController,
-                          decoration: InputDecoration(
-                            labelText: 'Email',
-                            prefixIcon: const Icon(Icons.email_outlined),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
+                          labelText: 'Email',
+                          prefixIcon: Icons.email_outlined,
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
                             if (value?.isEmpty ?? true) {
@@ -118,16 +114,11 @@ class _SignupScreenState extends State<SignupScreen> {
                           },
                         ),
                         const SizedBox(height: 16),
-                        TextFormField(
+                        AppTextField(
                           controller: _passwordController,
-                          decoration: InputDecoration(
-                            labelText: 'Password',
-                            prefixIcon: const Icon(Icons.lock_outline),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          obscureText: true,
+                          labelText: 'Password',
+                          prefixIcon: Icons.lock_outline,
+                          isPassword: true,
                           validator: (value) {
                             if (value?.isEmpty ?? true) {
                               return 'Please enter your password';
@@ -139,16 +130,11 @@ class _SignupScreenState extends State<SignupScreen> {
                           },
                         ),
                         const SizedBox(height: 16),
-                        TextFormField(
+                        AppTextField(
                           controller: _confirmPasswordController,
-                          decoration: InputDecoration(
-                            labelText: 'Confirm Password',
-                            prefixIcon: const Icon(Icons.lock_outline),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          obscureText: true,
+                          labelText: 'Confirm Password',
+                          prefixIcon: Icons.lock_outline,
+                          isPassword: true,
                           validator: (value) {
                             if (value?.isEmpty ?? true) {
                               return 'Please confirm your password';
