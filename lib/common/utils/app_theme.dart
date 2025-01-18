@@ -3,10 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   static ThemeData lightTheme = ThemeData(
+    
     useMaterial3: true,
     brightness: Brightness.light,
     colorScheme: ColorScheme.fromSeed(
-      seedColor: Colors.deepPurple,
+      seedColor: const Color.fromARGB(255, 4, 1, 26),
       brightness: Brightness.light,
     ),
     textTheme: GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme),
@@ -18,6 +19,17 @@ class AppTheme {
         color: Colors.black87,
         fontSize: 20,
         fontWeight: FontWeight.w600,
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color.fromARGB(255, 4, 1, 26),
+        foregroundColor: Colors.white,
+        elevation: 0,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
       ),
     ),
     cardTheme: CardTheme(
@@ -55,5 +67,16 @@ class AppTheme {
       ),
     ),
     scaffoldBackgroundColor: Colors.grey[900],
+        elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color.fromARGB(255, 4, 1, 26),
+        foregroundColor: Colors.white,
+        elevation: 0,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    ),
   );
 }

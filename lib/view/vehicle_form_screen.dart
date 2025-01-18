@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 
 class VehicleFormScreen extends StatefulWidget {
   final Vehicle? vehicle;
+  
 
   const VehicleFormScreen({super.key, this.vehicle});
 
@@ -33,56 +34,180 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     
+    
     return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text(widget.vehicle == null ? 'Add Vehicle' : 'Edit Vehicle'),
+        title: Text(
+          widget.vehicle == null ? 'Add Vehicle' : 'Edit Vehicle',
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0,
       ),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(24),
           children: [
-            TextFormField(
-              controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Vehicle Name'),
-              validator: (value) {
-                if (value?.isEmpty ?? true) {
-                  return 'Please enter a name';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _statusController,
-              decoration: const InputDecoration(labelText: 'Status'),
-              validator: (value) {
-                if (value?.isEmpty ?? true) {
-                  return 'Please enter a status';
-                }
-                return null;
-              },
+            Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+                side: BorderSide(
+                  color: theme.dividerColor.withOpacity(0.1),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Vehicle Information',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _nameController,
+                      decoration: InputDecoration(
+                        labelText: 'Vehicle Name',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        prefixIcon: const Icon(Icons.directions_car),
+                      ),
+                      validator: (value) {
+                        if (value?.isEmpty ?? true) {
+                          return 'Please enter a name';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _statusController,
+                      decoration: InputDecoration(
+                        labelText: 'Status',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        prefixIcon: const Icon(Icons.info_outline),
+                      ),
+                      validator: (value) {
+                        if (value?.isEmpty ?? true) {
+                          return 'Please enter a status';
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 24),
-            Text('Fuel Level', style: theme.textTheme.titleMedium),
-            Slider(
-              value: _fuelLevel,
-              onChanged: (value) => setState(() => _fuelLevel = value),
-            ),
-            const SizedBox(height: 16),
-            Text('Battery Level', style: theme.textTheme.titleMedium),
-            Slider(
-              value: _batteryLevel,
-              onChanged: (value) => setState(() => _batteryLevel = value),
+            Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+                side: BorderSide(
+                  color: theme.dividerColor.withOpacity(0.1),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Vehicle Status',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    _buildLevelIndicator(
+                      'Fuel Level',
+                      _fuelLevel,
+                      Icons.local_gas_station,
+                      Colors.blue,
+                      (value) => setState(() => _fuelLevel = value),
+                    ),
+                    const SizedBox(height: 24),
+                    _buildLevelIndicator(
+                      'Battery Level',
+                      _batteryLevel,
+                      Icons.battery_charging_full,
+                      Colors.green,
+                      (value) => setState(() => _batteryLevel = value),
+                    ),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 32),
             ElevatedButton(
               onPressed: _submitForm,
-              child: Text(widget.vehicle == null ? 'Add Vehicle' : 'Update Vehicle'),
+              child: Text(
+                widget.vehicle == null ? 'Add Vehicle' : 'Update Vehicle',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildLevelIndicator(
+    String label,
+    double value,
+    IconData icon,
+    Color color,
+    ValueChanged<double> onChanged,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(icon, size: 20, color: color),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const Spacer(),
+            Text(
+              '${(value * 100).toInt()}%',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: color,
+                  ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        SliderTheme(
+          data: SliderTheme.of(context).copyWith(
+            activeTrackColor: color,
+            inactiveTrackColor: color.withOpacity(0.1),
+            thumbColor: color,
+            overlayColor: color.withOpacity(0.2),
+          ),
+          child: Slider(
+            value: value,
+            onChanged: onChanged,
+          ),
+        ),
+      ],
     );
   }
 
