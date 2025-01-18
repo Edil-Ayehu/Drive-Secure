@@ -18,6 +18,7 @@ class VehicleFormScreen extends StatefulWidget {
 }
 
 class _VehicleFormScreenState extends State<VehicleFormScreen> {
+  bool _isLoading = false;
   File? _imageFile;
   final _cloudinaryService = CloudinaryService();
   final _picker = ImagePicker();
@@ -213,14 +214,27 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
             ),
             const SizedBox(height: 32),
             ElevatedButton(
-              onPressed: _submitForm,
-              child: Text(
-                widget.vehicle == null ? 'Add Vehicle' : 'Update Vehicle',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
+              onPressed: _isLoading ? null : _submitForm,
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 50),
+                padding: const EdgeInsets.symmetric(vertical: 12),
               ),
+              child: _isLoading
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : Text(
+                      widget.vehicle == null ? 'Add Vehicle' : 'Update Vehicle',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
             ),
           ],
         ),
@@ -275,6 +289,10 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
 
   void _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
+      setState(() {
+        _isLoading = true;
+      });
+
       String? imageUrl;
       if (_imageFile != null) {
         try {
@@ -284,6 +302,9 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Failed to upload image: $e')),
           );
+          setState(() {
+            _isLoading = false;
+          });
           return;
         }
       }
@@ -300,26 +321,37 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
         imageUrl: imageUrl ?? widget.vehicle?.imageUrl,
       );
 
-      if (widget.vehicle == null) {
-        context.read<VehicleBloc>().add(AddVehicle(vehicle));
-      } else {
-        context.read<VehicleBloc>().add(UpdateVehicle(vehicle));
+      try {
+        if (widget.vehicle == null) {
+          context.read<VehicleBloc>().add(AddVehicle(vehicle));
+        } else {
+          context.read<VehicleBloc>().add(UpdateVehicle(vehicle));
+        }
+
+        // Clear the form
+        _nameController.clear();
+        _statusController.clear();
+        setState(() {
+          _fuelLevel = 1.0;
+          _batteryLevel = 1.0;
+          _imageFile = null;
+          _isLoading = false;
+        });
+
+        // Show success message
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Vehicle saved successfully')),
+        );
+      } catch (e) {
+        setState(() {
+          _isLoading = false;
+        });
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error saving vehicle: $e')),
+        );
       }
-
-      // Clear the form
-      _nameController.clear();
-      _statusController.clear();
-      setState(() {
-        _fuelLevel = 1.0;
-        _batteryLevel = 1.0;
-        _imageFile = null;
-      });
-
-      // Show success message
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Vehicle saved successfully')),
-      );
     }
   }
 
