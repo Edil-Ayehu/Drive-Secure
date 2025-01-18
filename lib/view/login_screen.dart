@@ -5,7 +5,6 @@ import 'package:drive_secure/view/widgets/app_text_field.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
-
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -62,7 +61,12 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 32),
+                const SizedBox(height: 20),
+                Image.asset(
+                  'assets/images/vehicle.png',
+                  width: 150,
+                  height: 150,
+                ),
                 Text(
                   'Drive Secure',
                   style: theme.textTheme.headlineSmall?.copyWith(
@@ -146,7 +150,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         context,
                         '/signup',
                       ),
-                      child: const Text('Sign up'),
+                      child: const Text(
+                        'Sign up',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ],
                 ),

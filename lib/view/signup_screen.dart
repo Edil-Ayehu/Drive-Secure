@@ -47,7 +47,7 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
@@ -68,7 +68,11 @@ class _SignupScreenState extends State<SignupScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 32),
+                Image.asset(
+                  'assets/images/vehicle.png',
+                  width: 150,
+                  height: 150,
+                ),
                 Text(
                   'Join Drive Secure',
                   style: theme.textTheme.headlineSmall?.copyWith(
@@ -166,7 +170,10 @@ class _SignupScreenState extends State<SignupScreen> {
                         context,
                         '/login',
                       ),
-                      child: const Text('Login'),
+                      child: const Text(
+                        'Login',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ],
                 ),
