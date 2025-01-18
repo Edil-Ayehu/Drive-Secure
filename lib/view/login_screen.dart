@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:drive_secure/common/services/auth_service.dart';
 import 'package:drive_secure/view/widgets/app_text_field.dart';
+import 'package:drive_secure/view/forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -119,6 +120,25 @@ class _LoginScreenState extends State<LoginScreen> {
                             }
                             return null;
                           },
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const ForgotPasswordScreen(),
+                              ),
+                            ),
+                            child: Text(
+                              'Forgot Password?',
+                              style: TextStyle(
+                                color: theme.textTheme.bodyMedium?.color
+                                    ?.withOpacity(0.7),
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),

@@ -41,6 +41,15 @@ class AuthService {
     await _auth.signOut();
   }
 
+  // reset password
+Future<void> resetPassword(String email) async {
+  try {
+    await _auth.sendPasswordResetEmail(email: email);
+  } catch (e) {
+    throw Exception(e.toString());
+  }
+}
+
   // Get current user
   User? get currentUser => _auth.currentUser;
 }
