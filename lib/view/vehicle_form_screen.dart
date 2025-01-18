@@ -1,12 +1,15 @@
+import 'dart:io';
+
+import 'package:drive_secure/common/services/cloudinary_service.dart';
 import 'package:drive_secure/view/bloc/vehicle_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:drive_secure/model/vehicle.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
 class VehicleFormScreen extends StatefulWidget {
   final Vehicle? vehicle;
-  
 
   const VehicleFormScreen({super.key, this.vehicle});
 
@@ -15,12 +18,21 @@ class VehicleFormScreen extends StatefulWidget {
 }
 
 class _VehicleFormScreenState extends State<VehicleFormScreen> {
+  File? _imageFile;
+  final _cloudinaryService = CloudinaryService();
+  final _picker = ImagePicker();
+
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _statusController;
   late double _fuelLevel;
   late double _batteryLevel;
-  final List<String> _statusOptions = ['Active', 'Inactive', 'Maintenance', 'Out of Service'];
+  final List<String> _statusOptions = [
+    'Active',
+    'Inactive',
+    'Maintenance',
+    'Out of Service'
+  ];
 
   @override
   void initState() {
@@ -31,11 +43,19 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
     _batteryLevel = widget.vehicle?.batteryLevel ?? 1.0;
   }
 
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
-    
+
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
@@ -43,9 +63,9 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
           widget.vehicle == null ? 'Add Vehicle' : 'Edit Vehicle',
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
+            fontSize: 18,
           ),
         ),
-        centerTitle: true,
         elevation: 0,
       ),
       body: Form(
@@ -53,6 +73,32 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
         child: ListView(
           padding: const EdgeInsets.all(24),
           children: [
+            Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+                side: BorderSide(
+                  color: theme.dividerColor.withOpacity(0.1),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Vehicle Image',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildImagePicker(),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
             Card(
               elevation: 0,
               shape: RoundedRectangleBorder(
@@ -91,7 +137,9 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
                     ),
                     const SizedBox(height: 16),
                     DropdownButtonFormField<String>(
-                      value: _statusController.text.isEmpty ? _statusOptions[0] : _statusController.text,
+                      value: _statusController.text.isEmpty
+                          ? _statusOptions[0]
+                          : _statusController.text,
                       decoration: InputDecoration(
                         labelText: 'Status',
                         border: OutlineInputBorder(
@@ -225,17 +273,31 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
     );
   }
 
-  void _submitForm() {
+  void _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
+      String? imageUrl;
+      if (_imageFile != null) {
+        try {
+          imageUrl = await _cloudinaryService.uploadImage(_imageFile!);
+        } catch (e) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to upload image: $e')),
+          );
+          return;
+        }
+      }
+
       final vehicle = Vehicle(
         id: widget.vehicle?.id ?? const Uuid().v4(),
         name: _nameController.text,
         status: _statusController.text,
         fuelLevel: _fuelLevel,
         batteryLevel: _batteryLevel,
-        lastLocation: widget.vehicle?.lastLocation ?? 
-            {'latitude': 0.0, 'longitude': 0.0},
+        lastLocation:
+            widget.vehicle?.lastLocation ?? {'latitude': 0.0, 'longitude': 0.0},
         lastUpdated: DateTime.now(),
+        imageUrl: imageUrl ?? widget.vehicle?.imageUrl,
       );
 
       if (widget.vehicle == null) {
@@ -244,7 +306,55 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
         context.read<VehicleBloc>().add(UpdateVehicle(vehicle));
       }
 
-      Navigator.pop(context);
+      // Clear the form
+      _nameController.clear();
+      _statusController.clear();
+      setState(() {
+        _fuelLevel = 1.0;
+        _batteryLevel = 1.0;
+        _imageFile = null;
+      });
+
+      // Show success message
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Vehicle saved successfully')),
+      );
     }
+  }
+
+  Widget _buildImagePicker() {
+    return GestureDetector(
+      onTap: _pickImage,
+      child: Container(
+        height: 200,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: _imageFile != null
+            ? ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.file(
+                  _imageFile!,
+                  fit: BoxFit.cover,
+                ),
+              )
+            : widget.vehicle?.imageUrl != null
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      widget.vehicle!.imageUrl!,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                : Icon(
+                    Icons.add_a_photo,
+                    size: 50,
+                    color: Theme.of(context).primaryColor,
+                  ),
+      ),
+    );
   }
 }

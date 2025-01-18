@@ -27,129 +27,146 @@ class VehicleCard extends StatelessWidget {
             ),
           );
         },
-        child: Stack(
+        child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          vehicle.name,
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildStatusIndicator(
-                          context,
-                          'Fuel Level',
-                          vehicle.fuelLevel,
-                          Icons.local_gas_station,
-                          Colors.blue,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: _buildStatusIndicator(
-                          context,
-                          'Battery',
-                          vehicle.batteryLevel,
-                          Icons.battery_charging_full,
-                          Colors.green,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Last Updated: ${_formatDateTime(vehicle.lastUpdated)}',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: statusColor.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          vehicle.status,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: statusColor,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-              top: 12,
-              right: 12,
-              child: PopupMenuButton(
-                icon: Icon(
-                  Icons.more_vert,
-                  color: theme.iconTheme.color?.withOpacity(0.7),
+            if (vehicle.imageUrl != null)
+              ClipRRect(
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(12)),
+                child: Image.network(
+                  vehicle.imageUrl!,
+                  height: 200,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
                 ),
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 'edit',
-                    child: Row(
-                      children: [
-                        Icon(Icons.edit_outlined,
-                            size: 20, color: theme.iconTheme.color),
-                        const SizedBox(width: 8),
-                        const Text('Edit'),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'delete',
-                    child: Row(
-                      children: [
-                        Icon(Icons.delete_outline,
-                            size: 20, color: theme.colorScheme.error),
-                        const SizedBox(width: 8),
-                        Text('Delete',
-                            style: TextStyle(color: theme.colorScheme.error)),
-                      ],
-                    ),
-                  ),
-                ],
-                onSelected: (value) {
-                  if (value == 'edit') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            VehicleFormScreen(vehicle: vehicle),
-                      ),
-                    );
-                  } else if (value == 'delete') {
-                    _handleDeleteVehicle(vehicle.id, vehicle.name, context);
-                  }
-                },
               ),
+            Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              vehicle.name,
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildStatusIndicator(
+                              context,
+                              'Fuel Level',
+                              vehicle.fuelLevel,
+                              Icons.local_gas_station,
+                              Colors.blue,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: _buildStatusIndicator(
+                              context,
+                              'Battery',
+                              vehicle.batteryLevel,
+                              Icons.battery_charging_full,
+                              Colors.green,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Last Updated: ${_formatDateTime(vehicle.lastUpdated)}',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.textTheme.bodySmall?.color
+                              ?.withOpacity(0.7),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: statusColor.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              vehicle.status,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: statusColor,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  top: 12,
+                  right: 12,
+                  child: PopupMenuButton(
+                    icon: Icon(
+                      Icons.more_vert,
+                      color: theme.iconTheme.color?.withOpacity(0.7),
+                    ),
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        value: 'edit',
+                        child: Row(
+                          children: [
+                            Icon(Icons.edit_outlined,
+                                size: 20, color: theme.iconTheme.color),
+                            const SizedBox(width: 8),
+                            const Text('Edit'),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: 'delete',
+                        child: Row(
+                          children: [
+                            Icon(Icons.delete_outline,
+                                size: 20, color: theme.colorScheme.error),
+                            const SizedBox(width: 8),
+                            Text('Delete',
+                                style:
+                                    TextStyle(color: theme.colorScheme.error)),
+                          ],
+                        ),
+                      ),
+                    ],
+                    onSelected: (value) {
+                      if (value == 'edit') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                VehicleFormScreen(vehicle: vehicle),
+                          ),
+                        );
+                      } else if (value == 'delete') {
+                        _handleDeleteVehicle(vehicle.id, vehicle.name, context);
+                      }
+                    },
+                  ),
+                ),
+              ],
             ),
           ],
         ),

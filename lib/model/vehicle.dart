@@ -7,6 +7,7 @@ class Vehicle {
   final Map<String, double> lastLocation; // {latitude, longitude}
   final DateTime lastUpdated;
   final String userId;
+  final String? imageUrl;
 
   Vehicle({
     required this.id,
@@ -17,6 +18,7 @@ class Vehicle {
     required this.lastLocation,
     required this.lastUpdated,
     this.userId = '',
+    this.imageUrl,
   });
 
   factory Vehicle.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class Vehicle {
       lastLocation: Map<String, double>.from(json['lastLocation']),
       lastUpdated: DateTime.parse(json['lastUpdated']),
       userId: json['userId'] as String? ?? '',
+       imageUrl: json['imageUrl'] as String?,
     );
   }
 
@@ -42,6 +45,7 @@ class Vehicle {
       'lastLocation': lastLocation,
       'lastUpdated': lastUpdated.toIso8601String(),
       'userId': userId,
+      'imageUrl': imageUrl,
     };
   }
 }
