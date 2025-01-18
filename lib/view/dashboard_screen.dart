@@ -94,6 +94,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
           } else if (state is VehicleError) {
             return Center(child: Text(state.message));
           } else if (state is VehicleLoaded) {
+            if (state.vehicles.isEmpty) {
+              return RefreshIndicator(
+                onRefresh: () async {
+                  context.read<VehicleBloc>().add(LoadVehicles());
+                },
+                child: ListView(
+                  children: [_buildEmptyState()],
+                ),
+              );
+            }
             return RefreshIndicator(
               onRefresh: () async {
                 context.read<VehicleBloc>().add(LoadVehicles());
@@ -112,10 +122,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               context.read<VehicleBloc>().add(LoadVehicles());
             },
             child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: const [
-                Center(child: Text('No vehicles found')),
-              ],
+              children: [_buildEmptyState()],
             ),
           );
         },
@@ -249,6 +256,55 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.8,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            'assets/images/vehicle.png',
+            width: 200,
+            height: 200,
+            color: Colors.grey.withOpacity(0.5),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'No Vehicles Yet',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Add your first vehicle to start monitoring',
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Colors.grey,
+                ),
+          ),
+          const SizedBox(height: 24),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child:  ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const VehicleFormScreen(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.add),
+            label: const Text('Add Vehicle'),
+          ),
+          ),
+         
+        ],
+      ),
     );
   }
 }
