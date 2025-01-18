@@ -20,6 +20,7 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
   late TextEditingController _statusController;
   late double _fuelLevel;
   late double _batteryLevel;
+  final List<String> _statusOptions = ['Active', 'Inactive', 'Maintenance', 'Out of Service'];
 
   @override
   void initState() {
@@ -89,8 +90,8 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _statusController,
+                    DropdownButtonFormField<String>(
+                      value: _statusController.text.isEmpty ? _statusOptions[0] : _statusController.text,
                       decoration: InputDecoration(
                         labelText: 'Status',
                         border: OutlineInputBorder(
@@ -98,9 +99,22 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
                         ),
                         prefixIcon: const Icon(Icons.info_outline),
                       ),
+                      items: _statusOptions.map((String status) {
+                        return DropdownMenuItem<String>(
+                          value: status,
+                          child: Text(status),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          setState(() {
+                            _statusController.text = newValue;
+                          });
+                        }
+                      },
                       validator: (value) {
-                        if (value?.isEmpty ?? true) {
-                          return 'Please enter a status';
+                        if (value == null || value.isEmpty) {
+                          return 'Please select a status';
                         }
                         return null;
                       },
