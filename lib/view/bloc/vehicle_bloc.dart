@@ -31,7 +31,9 @@ class VehicleLoaded extends VehicleState {
 }
 class VehicleError extends VehicleState {
   final String message;
-  VehicleError(this.message);
+  final bool isAuthError;
+  
+  VehicleError(this.message, {this.isAuthError = false});
 }
 
 // Bloc

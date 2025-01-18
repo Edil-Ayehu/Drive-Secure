@@ -4,6 +4,7 @@ import 'package:drive_secure/view/widgets/vehicle_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:drive_secure/common/services/auth_service.dart';
 
 class DashboardScreen extends StatefulWidget {
   final VoidCallback onThemeToggle;
@@ -18,6 +19,21 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  final AuthService _authService = AuthService();
+
+  Future<void> _handleLogout() async {
+    try {
+      await _authService.signOut();
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(context, '/login');
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error logging out: $e')),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -36,7 +52,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         backgroundColor: theme.appBarTheme.backgroundColor,
         title: Text(
           'Vehicle Monitor',
-          style: theme.appBarTheme.titleTextStyle,
+          style: theme.appBarTheme.titleTextStyle!.copyWith(
+            fontSize: 17,
+          ),
         ),
         actions: [
           IconButton(
@@ -45,6 +63,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
               color: theme.appBarTheme.iconTheme?.color,
             ),
             onPressed: widget.onThemeToggle,
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.logout,
+              color: theme.appBarTheme.iconTheme?.color,
+            ),
+            onPressed: _handleLogout,
           ),
           IconButton(
             icon: Icon(

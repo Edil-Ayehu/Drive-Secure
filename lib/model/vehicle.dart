@@ -6,6 +6,7 @@ class Vehicle {
   final double batteryLevel;
   final Map<String, double> lastLocation; // {latitude, longitude}
   final DateTime lastUpdated;
+  final String userId;
 
   Vehicle({
     required this.id,
@@ -15,6 +16,7 @@ class Vehicle {
     required this.batteryLevel,
     required this.lastLocation,
     required this.lastUpdated,
+    this.userId = '',
   });
 
   factory Vehicle.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class Vehicle {
       batteryLevel: json['batteryLevel'].toDouble(),
       lastLocation: Map<String, double>.from(json['lastLocation']),
       lastUpdated: DateTime.parse(json['lastUpdated']),
+      userId: json['userId'] as String? ?? '',
     );
   }
 
@@ -38,6 +41,7 @@ class Vehicle {
       'batteryLevel': batteryLevel,
       'lastLocation': lastLocation,
       'lastUpdated': lastUpdated.toIso8601String(),
+      'userId': userId,
     };
   }
 }
