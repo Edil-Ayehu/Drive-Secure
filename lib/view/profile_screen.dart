@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:drive_secure/common/services/auth_service.dart';
+import 'package:drive_secure/common/utils/dialog_utils.dart';
 
 class ProfileScreen extends StatefulWidget {
   final VoidCallback onThemeToggle;
@@ -17,6 +18,23 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final AuthService _authService = AuthService();
   final user = FirebaseAuth.instance.currentUser;
+
+  Future<void> _handleLogout() async {
+    final confirmed = await DialogUtils.showLogoutConfirmationDialog(context);
+
+    if (confirmed ?? false) {
+      try {
+        await _authService.signOut();
+        if (!mounted) return;
+        Navigator.pushReplacementNamed(context, '/login');
+      } catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error logging out: $e')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,11 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ListTile(
             leading: const Icon(Icons.logout),
             title: const Text('Logout'),
-            onTap: () async {
-              await _authService.signOut();
-              if (!mounted) return;
-              Navigator.pushReplacementNamed(context, '/login');
-            },
+            onTap: _handleLogout,
           ),
         ],
       ),
