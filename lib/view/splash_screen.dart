@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _initializeApp() async {
     try {
-      await Future.delayed(const Duration(milliseconds: 1000));
+      await Future.delayed(const Duration(milliseconds: 3000));
       final prefs = await PreferencesService.getInstance();
       if (!mounted) return;
 
