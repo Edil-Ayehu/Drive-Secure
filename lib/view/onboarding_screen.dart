@@ -1,7 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:drive_secure/common/services/preferences_service.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
+  
+  Future<void> _onGetStarted(BuildContext context) async {
+    try {
+      final prefs = await PreferencesService.getInstance();
+      await prefs.setHasSeenOnboarding();
+      if (!context.mounted) return;
+      Navigator.pushReplacementNamed(context, '/login');
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +48,10 @@ class OnboardingScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                onPressed: () =>
-                    Navigator.pushReplacementNamed(context, '/login'),
-                child: const Text('Get Started'),
+                  onPressed: () => _onGetStarted(context),
+                  child: const Text('Get Started'),
+                ),
               ),
-              ),
-              
             ],
           ),
         ),

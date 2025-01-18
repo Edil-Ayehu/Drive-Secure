@@ -1,4 +1,5 @@
 import 'package:drive_secure/common/services/firebase_service.dart';
+import 'package:drive_secure/common/services/preferences_service.dart';
 import 'package:drive_secure/common/utils/app_theme.dart';
 import 'package:drive_secure/firebase_options.dart';
 import 'package:drive_secure/view/bloc/vehicle_bloc.dart';
@@ -14,10 +15,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // Initialize Firebase 
+  await Future.wait([
+    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
+  ]);
+  
   runApp(const MyApp());
 }
 
