@@ -4,6 +4,7 @@ import 'package:drive_secure/common/utils/app_theme.dart';
 import 'package:drive_secure/firebase_options.dart';
 import 'package:drive_secure/view/bloc/vehicle_bloc.dart';
 import 'package:drive_secure/view/dashboard_screen.dart';
+import 'package:drive_secure/view/home_screen.dart';
 import 'package:drive_secure/view/login_screen.dart';
 import 'package:drive_secure/view/onboarding_screen.dart';
 import 'package:drive_secure/view/signup_screen.dart';
@@ -15,11 +16,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase 
+  // Initialize Firebase
   await Future.wait([
     Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
   ]);
-  
+
   runApp(const MyApp());
 }
 
@@ -48,7 +49,8 @@ class _MyAppState extends State<MyApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => VehicleBloc(FirebaseService())..add(LoadVehicles()),
+          create: (context) =>
+              VehicleBloc(FirebaseService())..add(LoadVehicles()),
         ),
       ],
       child: MaterialApp(
@@ -63,7 +65,7 @@ class _MyAppState extends State<MyApp> {
           '/onboarding': (context) => const OnboardingScreen(),
           '/login': (context) => const LoginScreen(),
           '/signup': (context) => const SignupScreen(),
-          '/dashboard': (context) => DashboardScreen(onThemeToggle: toggleTheme),
+          '/dashboard': (context) => HomeScreen(onThemeToggle: toggleTheme),
         },
       ),
     );

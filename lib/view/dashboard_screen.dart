@@ -132,7 +132,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         );
       }
     }
-  } 
+  }
 
   @override
   void initState() {
@@ -157,13 +157,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
         actions: [
-          IconButton(
-            icon: Icon(
-              isDarkMode ? Icons.light_mode : Icons.dark_mode,
-              color: theme.appBarTheme.iconTheme?.color,
-            ),
-            onPressed: widget.onThemeToggle,
-          ),
+          // IconButton(
+          //   icon: Icon(
+          //     isDarkMode ? Icons.light_mode : Icons.dark_mode,
+          //     color: theme.appBarTheme.iconTheme?.color,
+          //   ),
+          //   onPressed: widget.onThemeToggle,
+          // ),
           IconButton(
             icon: Icon(
               Icons.logout,
@@ -171,20 +171,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             onPressed: _handleLogout,
           ),
-          IconButton(
-            icon: Icon(
-              Icons.add,
-              color: theme.appBarTheme.iconTheme?.color,
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const VehicleFormScreen(),
-                ),
-              );
-            },
-          ),
+          // IconButton(
+          //   icon: Icon(
+          //     Icons.add,
+          //     color: theme.appBarTheme.iconTheme?.color,
+          //   ),
+          //   onPressed: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder: (context) => const VehicleFormScreen(),
+          //       ),
+          //     );
+          //   },
+          // ),
         ],
       ),
       body: BlocBuilder<VehicleBloc, VehicleState>(
