@@ -3,6 +3,7 @@ import 'package:drive_secure/view/bloc/vehicle_bloc.dart';
 import 'package:drive_secure/view/vehicle_form_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class VehicleCard extends StatelessWidget {
   final Vehicle vehicle;
@@ -33,11 +34,32 @@ class VehicleCard extends StatelessWidget {
               ClipRRect(
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(12)),
-                child: Image.network(
-                  vehicle.imageUrl!,
+                child: CachedNetworkImage(
+                  imageUrl: vehicle.imageUrl!,
                   height: 200,
                   width: double.infinity,
                   fit: BoxFit.cover,
+                  placeholder: (context, url) => _ShimmerLoadingPlaceholder(),
+                  errorWidget: (context, url, error) => Container(
+                    color: theme.colorScheme.surfaceVariant,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          color: theme.colorScheme.error,
+                          size: 32,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Failed to load image',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.error,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             Stack(
@@ -322,5 +344,76 @@ class VehicleCard extends StatelessWidget {
     if (confirmed ?? false) {
       context.read<VehicleBloc>().add(DeleteVehicle(vehicleId));
     }
+  }
+}
+
+class _ShimmerLoadingPlaceholder extends StatefulWidget {
+  @override
+  State<_ShimmerLoadingPlaceholder> createState() =>
+      _ShimmerLoadingPlaceholderState();
+}
+
+class _ShimmerLoadingPlaceholderState extends State<_ShimmerLoadingPlaceholder>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _shimmerController;
+
+  @override
+  void initState() {
+    super.initState();
+    _shimmerController = AnimationController.unbounded(vsync: this)
+      ..repeat(min: -0.5, max: 1.5, period: const Duration(milliseconds: 1000));
+  }
+
+  @override
+  void dispose() {
+    _shimmerController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _shimmerController,
+      builder: (context, child) {
+        return ShaderMask(
+          blendMode: BlendMode.srcATop,
+          shaderCallback: (bounds) {
+            return const LinearGradient(
+              colors: [
+                Color(0xFFEBEBF4),
+                Color(0xFFF4F4F4),
+                Color(0xFFEBEBF4),
+              ],
+              stops: [0.1, 0.3, 0.4],
+              begin: Alignment(-1.0, -0.3),
+              end: Alignment(1.0, 0.3),
+            ).createShader(
+              bounds,
+              // transform: _SlidingGradientTransform(
+              //   slidePercent: _shimmerController.value,
+              // ),
+            );
+          },
+          child: Container(
+            height: 200,
+            width: double.infinity,
+            color: Colors.white,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _SlidingGradientTransform extends GradientTransform {
+  const _SlidingGradientTransform({
+    required this.slidePercent,
+  });
+
+  final double slidePercent;
+
+  @override
+  Matrix4? transform(Rect bounds, {TextDirection? textDirection}) {
+    return Matrix4.translationValues(bounds.width * slidePercent, 0.0, 0.0);
   }
 }
