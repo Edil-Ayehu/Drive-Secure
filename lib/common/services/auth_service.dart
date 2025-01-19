@@ -1,3 +1,4 @@
+import 'package:drive_secure/common/utils/auth_error_handler.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
@@ -16,8 +17,10 @@ class AuthService {
         email: email,
         password: password,
       );
+    } on FirebaseAuthException catch (e) {
+      throw Exception(AuthErrorHandler.getErrorMessage(e.code));
     } catch (e) {
-      throw Exception(e.toString());
+      throw Exception('An unexpected error occurred. Please try again.');
     }
   }
 
@@ -31,8 +34,10 @@ class AuthService {
         email: email,
         password: password,
       );
+    } on FirebaseAuthException catch (e) {
+      throw Exception(AuthErrorHandler.getErrorMessage(e.code));
     } catch (e) {
-      throw Exception(e.toString());
+      throw Exception('An unexpected error occurred. Please try again.');
     }
   }
 
@@ -45,8 +50,10 @@ class AuthService {
 Future<void> resetPassword(String email) async {
   try {
     await _auth.sendPasswordResetEmail(email: email);
+  } on FirebaseAuthException catch (e) {
+    throw Exception(AuthErrorHandler.getErrorMessage(e.code));
   } catch (e) {
-    throw Exception(e.toString());
+    throw Exception('An unexpected error occurred. Please try again.');
   }
 }
 

@@ -36,7 +36,11 @@ class _SignupScreenState extends State<SignupScreen> {
         Navigator.pushReplacementNamed(context, '/dashboard');
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
+          SnackBar(
+            content: Text(e.toString().replaceAll('Exception: ', '')),
+            backgroundColor: Theme.of(context).colorScheme.error,
+            behavior: SnackBarBehavior.floating,
+          ),
         );
       } finally {
         setState(() => _isLoading = false);
