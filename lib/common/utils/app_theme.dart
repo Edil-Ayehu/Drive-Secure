@@ -40,6 +40,27 @@ class AppTheme {
       ),
     ),
     scaffoldBackgroundColor: Colors.grey[100],
+    iconTheme: const IconThemeData(
+      color: Color(0xFF1E1E1E),
+      size: 24,
+    ),
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: Colors.white,
+      indicatorColor: Colors.transparent,
+      labelTextStyle: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.selected)) {
+          return GoogleFonts.poppins(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: const Color.fromARGB(255, 4, 1, 26),
+          );
+        }
+        return GoogleFonts.poppins(
+          fontSize: 12,
+          color: Colors.grey,
+        );
+      }),
+    ),
   );
 
   static ThemeData darkTheme = ThemeData(
@@ -78,5 +99,27 @@ class AppTheme {
         ),
       ),
     ),
+    iconTheme: const IconThemeData(
+      color: Colors.white,
+      size: 24,
+    ),
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: Colors.grey[900],
+      indicatorColor: Colors.transparent,
+      labelTextStyle: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.selected)) {
+          return GoogleFonts.poppins(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          );
+        }
+        return GoogleFonts.poppins(
+          fontSize: 12,
+          color: Colors.grey,
+        );
+      }),
+    ),
   );
 }
+
