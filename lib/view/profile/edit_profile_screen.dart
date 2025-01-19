@@ -69,9 +69,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               const SizedBox(height: 24),
               _isLoading
                   ? const CircularProgressIndicator()
-                  : ElevatedButton(
-                      onPressed: _updateProfile,
-                      child: const Text('Update Profile'),
+                  : SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _updateProfile,
+                        child: const Text('Update Profile'),
+                      ),
                     ),
             ],
           ),

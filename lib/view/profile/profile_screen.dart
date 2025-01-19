@@ -64,9 +64,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           const SizedBox(height: 16),
+          // Display name if available
+          if (user?.displayName?.isNotEmpty ?? false)
+            Text(
+              user!.displayName!,
+              style: theme.textTheme.titleLarge,
+              textAlign: TextAlign.center,
+            ),
+          const SizedBox(height: 8),
+          // Email
           Text(
             user?.email ?? 'No email',
-            style: theme.textTheme.titleLarge,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: theme.textTheme.bodyLarge?.color?.withOpacity(0.7),
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
