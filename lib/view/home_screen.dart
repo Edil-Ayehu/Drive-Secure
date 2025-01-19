@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:drive_secure/view/dashboard_screen.dart';
 import 'package:drive_secure/view/vehicle_form_screen.dart';
-import 'package:drive_secure/view/profile_screen.dart';
+import 'package:drive_secure/view/profile/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final VoidCallback onThemeToggle;
