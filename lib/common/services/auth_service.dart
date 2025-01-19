@@ -57,6 +57,29 @@ Future<void> resetPassword(String email) async {
   }
 }
 
+
+// change password
+Future<void> changePassword(String currentPassword, String newPassword) async {
+  try {
+    final user = _auth.currentUser;
+    if (user == null) throw Exception('User not authenticated');
+
+    // Reauthenticate user before changing password
+    final credential = EmailAuthProvider.credential(
+      email: user.email!,
+      password: currentPassword,
+    );
+    await user.reauthenticateWithCredential(credential);
+    
+    // Change password
+    await user.updatePassword(newPassword);
+  } on FirebaseAuthException catch (e) {
+    throw Exception(AuthErrorHandler.getErrorMessage(e.code));
+  } catch (e) {
+    throw Exception('An unexpected error occurred. Please try again.');
+  }
+}
+
   // Get current user
   User? get currentUser => _auth.currentUser;
 }

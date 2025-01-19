@@ -1,3 +1,4 @@
+import 'package:drive_secure/view/change_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:drive_secure/common/services/auth_service.dart';
@@ -44,12 +45,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
-        // actions: [
-        //   IconButton(
-        //     icon: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode),
-        //     onPressed: widget.onThemeToggle,
-        //   ),
-        // ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -92,7 +87,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: const Text('Change Password'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
-                    // TODO: Implement change password
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ChangePasswordScreen(),
+                      ),
+                    );
                   },
                 ),
               ],
