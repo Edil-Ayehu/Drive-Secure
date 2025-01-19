@@ -2,6 +2,8 @@ import 'package:drive_secure/view/profile/battery_alert_screen.dart';
 import 'package:drive_secure/view/profile/change_password_screen.dart';
 import 'package:drive_secure/view/profile/edit_profile_screen.dart';
 import 'package:drive_secure/view/profile/fuel_unit_screen.dart';
+import 'package:drive_secure/view/profile/privacy_policy_screen.dart';
+import 'package:drive_secure/view/profile/terms_of_service_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:drive_secure/common/services/auth_service.dart';
@@ -219,7 +221,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   leading: const Icon(Icons.description_outlined),
                   title: const Text('Terms of Service'),
                   onTap: () {
-                    // TODO: Implement terms of service
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TermsOfServiceScreen(),
+                      ),
+                    );
                   },
                 ),
                 const Divider(),
@@ -227,7 +234,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   leading: const Icon(Icons.privacy_tip_outlined),
                   title: const Text('Privacy Policy'),
                   onTap: () {
-                    // TODO: Implement privacy policy
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PrivacyPolicyScreen(),
+                      ),
+                    );
                   },
                 ),
               ],
