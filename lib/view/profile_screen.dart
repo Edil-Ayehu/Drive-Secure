@@ -44,19 +44,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
-        actions: [
-          IconButton(
-            icon: Icon(
-              isDarkMode ? Icons.light_mode : Icons.dark_mode,
-            ),
-            onPressed: widget.onThemeToggle,
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode),
+        //     onPressed: widget.onThemeToggle,
+        //   ),
+        // ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           const SizedBox(height: 20),
+          // Profile Image Section
           CircleAvatar(
             radius: 50,
             backgroundColor: theme.primaryColor.withOpacity(0.1),
@@ -73,12 +72,150 @@ class _ProfileScreenState extends State<ProfileScreen> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Logout'),
-            onTap: _handleLogout,
+
+          // Account Settings Section
+          _buildSectionHeader(theme, 'Account Settings'),
+          Card(
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.person_outline),
+                  title: const Text('Edit Profile'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    // TODO: Implement edit profile
+                  },
+                ),
+                const Divider(),
+                ListTile(
+                  leading: const Icon(Icons.lock_outline),
+                  title: const Text('Change Password'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    // TODO: Implement change password
+                  },
+                ),
+              ],
+            ),
           ),
+          const SizedBox(height: 24),
+
+          // App Settings Section
+          _buildSectionHeader(theme, 'App Settings'),
+          Card(
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.notifications_outlined),
+                  title: const Text('Notifications'),
+                  trailing: Switch(
+                    value: true, // TODO: Implement notifications state
+                    onChanged: (value) {
+                      // TODO: Implement notifications toggle
+                    },
+                  ),
+                ),
+                const Divider(),
+                ListTile(
+                  leading: Icon(
+                    isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                  ),
+                  title: const Text('Theme'),
+                  trailing: Switch(
+                    value: isDarkMode,
+                    onChanged: (_) => widget.onThemeToggle(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // Vehicle Preferences Section
+          _buildSectionHeader(theme, 'Vehicle Preferences'),
+          Card(
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.speed_outlined),
+                  title: const Text('Default Fuel Unit'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    // TODO: Implement fuel unit selection
+                  },
+                ),
+                const Divider(),
+                ListTile(
+                  leading: const Icon(Icons.battery_charging_full_outlined),
+                  title: const Text('Battery Alert Threshold'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    // TODO: Implement battery threshold setting
+                  },
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // About Section
+          _buildSectionHeader(theme, 'About'),
+          Card(
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.info_outline),
+                  title: const Text('App Version'),
+                  trailing:
+                      const Text('1.0.0'), // TODO: Implement version tracking
+                ),
+                const Divider(),
+                ListTile(
+                  leading: const Icon(Icons.description_outlined),
+                  title: const Text('Terms of Service'),
+                  onTap: () {
+                    // TODO: Implement terms of service
+                  },
+                ),
+                const Divider(),
+                ListTile(
+                  leading: const Icon(Icons.privacy_tip_outlined),
+                  title: const Text('Privacy Policy'),
+                  onTap: () {
+                    // TODO: Implement privacy policy
+                  },
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // Logout Section
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.logout, color: Colors.red),
+              title: const Text(
+                'Logout',
+                style: TextStyle(color: Colors.red),
+              ),
+              onTap: _handleLogout,
+            ),
+          ),
+          const SizedBox(height: 16),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(ThemeData theme, String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, bottom: 8),
+      child: Text(
+        title,
+        style: theme.textTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.bold,
+          color: theme.colorScheme.primary,
+        ),
       ),
     );
   }
