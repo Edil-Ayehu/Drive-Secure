@@ -27,10 +27,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       try {
         await user?.updateDisplayName(_displayNameController.text);
         if (!mounted) return;
+        
+        await user?.reload();
+        
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Profile updated successfully')),
         );
-        Navigator.pop(context);
+        Navigator.pop(context, true);
       } catch (e) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(

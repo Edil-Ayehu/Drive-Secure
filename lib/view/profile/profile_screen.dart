@@ -21,7 +21,19 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final AuthService _authService = AuthService();
-  final user = FirebaseAuth.instance.currentUser;
+  User? user;
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshUser();
+  }
+
+  void _refreshUser() {
+    setState(() {
+      user = FirebaseAuth.instance.currentUser;
+    });
+  }
 
   Future<void> _handleLogout() async {
     final confirmed = await DialogUtils.showLogoutConfirmationDialog(context);
@@ -91,13 +103,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   leading: const Icon(Icons.person_outline),
                   title: const Text('Edit Profile'),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    Navigator.push(
+                  onTap: () async {
+                    final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const EditProfileScreen(),
                       ),
                     );
+
+                    if (result == true && mounted) {
+                      _refreshUser();
+                    }
                   },
                 ),
                 const Divider(),
